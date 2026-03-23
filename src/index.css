@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-display: 'Bebas Neue', 'Arial Narrow', sans-serif;
+  --color-sky-accent: #2563eb;
+  --color-sky-accent-dark: #1d4ed8;
+  --color-sky-light: #eff6ff;
+  --color-sky-border: #e5e7eb;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
