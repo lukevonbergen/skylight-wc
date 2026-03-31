@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Phone,
   Mail,
@@ -41,6 +41,7 @@ function Navbar() {
 
   const links = [
     { label: 'Services', href: '#services' },
+    { label: 'Gallery', href: '#gallery' },
     { label: 'Reviews', href: '#reviews' },
     { label: 'About', href: '#about' },
     { label: 'Contact', href: '#contact' },
@@ -390,9 +391,66 @@ function Reviews() {
   )
 }
 
-function BeforeAfter() {
+function BeforeAfterToggle({ before, after, label }) {
+  const [showBefore, setShowBefore] = useState(false)
+
   return (
-    <section className="py-24 bg-gray-50">
+    <div className="space-y-3">
+      <div
+        className="relative w-full h-80 md:h-96 rounded-lg overflow-hidden cursor-pointer select-none"
+        onClick={() => setShowBefore(!showBefore)}
+      >
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={showBefore ? 'before' : 'after'}
+            src={showBefore ? before : after}
+            alt={`${label} ${showBefore ? 'before' : 'after'} cleaning`}
+            className="absolute inset-0 w-full h-full object-cover"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            draggable={false}
+          />
+        </AnimatePresence>
+
+        {/* Label badge */}
+        <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-sm text-white text-xs font-display uppercase tracking-wider px-3 py-1 rounded">
+          {showBefore ? 'Before' : 'After'}
+        </div>
+
+        {/* Tap hint */}
+        <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white/70 text-xs px-3 py-1 rounded">
+          Tap to see {showBefore ? 'after' : 'before'}
+        </div>
+      </div>
+      <p className="text-center text-gray-500 text-sm font-medium">{label}</p>
+    </div>
+  )
+}
+
+function Gallery() {
+  const comparisons = [
+    {
+      before: '/images/new/doors-dirty.jpeg',
+      after: '/images/new/doors-clean.jpeg',
+      label: 'Door & window glass cleaning',
+    },
+    {
+      before: '/images/new/guttering-before.jpeg',
+      after: '/images/new/guttering-after.jpeg',
+      label: 'Gutter clearing',
+    },
+  ]
+
+  const galleryImages = [
+    { src: '/images/new/clean-house-exterior.jpeg', alt: 'Clean house exterior after full window clean' },
+    { src: '/images/new/commercial-window-cleaning.jpeg', alt: 'Commercial window cleaning with reach-and-wash system' },
+    { src: '/images/new/commercial-window-cleaning-1.jpeg', alt: 'Commercial building window cleaning' },
+  ]
+
+  return (
+    <section id="gallery" className="py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           className="text-center mb-16"
@@ -402,42 +460,57 @@ function BeforeAfter() {
           variants={stagger}
         >
           <motion.p variants={fadeUp} className="text-sky-accent font-semibold text-sm uppercase tracking-widest mb-3">
-            The Difference
+            Our Work
           </motion.p>
           <motion.h2 variants={fadeUp} className="font-display uppercase tracking-wide text-4xl md:text-5xl text-gray-900">
-            Before & After
+            Gallery
           </motion.h2>
+          <motion.p variants={fadeUp} className="mt-4 text-gray-500 text-lg">
+            Tap the before & after shots to see the difference.
+          </motion.p>
         </motion.div>
 
+        {/* Before / After sliders */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-80px' }}
           variants={stagger}
         >
-          <motion.div variants={fadeUp} className="relative rounded-lg overflow-hidden">
-            <img
-              src="/images/before-image.webp"
-              alt="Window before cleaning"
-              className="w-full h-72 object-cover"
-              loading="lazy"
-            />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-              <span className="text-white font-display uppercase tracking-wider text-lg">Before</span>
-            </div>
-          </motion.div>
-          <motion.div variants={fadeUp} className="relative rounded-lg overflow-hidden">
-            <img
-              src="/images/after-image.webp"
-              alt="Window after cleaning"
-              className="w-full h-72 object-cover"
-              loading="lazy"
-            />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-              <span className="text-white font-display uppercase tracking-wider text-lg">After</span>
-            </div>
-          </motion.div>
+          {comparisons.map((comp) => (
+            <motion.div key={comp.label} variants={fadeUp}>
+              <BeforeAfterToggle
+                before={comp.before}
+                after={comp.after}
+                label={comp.label}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Standalone gallery images */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={stagger}
+        >
+          {galleryImages.map((img) => (
+            <motion.div
+              key={img.src}
+              variants={fadeUp}
+              className="rounded-lg overflow-hidden"
+            >
+              <img
+                src={img.src}
+                alt={img.alt}
+                className="w-full h-64 object-cover hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+              />
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </section>
@@ -574,14 +647,16 @@ export default function SkylightLanding() {
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
-      <Hero />
-      <TrustBar />
-      <Services />
-      <HowItWorks />
-      <Reviews />
-      <BeforeAfter />
-      <About />
-      <FinalCTA />
+      <main>
+        <Hero />
+        <TrustBar />
+        <Services />
+        <HowItWorks />
+        <Reviews />
+        <Gallery />
+        <About />
+        <FinalCTA />
+      </main>
       <Footer />
       <BackToTop />
     </div>
