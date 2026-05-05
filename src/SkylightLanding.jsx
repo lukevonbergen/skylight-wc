@@ -615,6 +615,14 @@ function Footer() {
           <p className="text-gray-600 text-sm">
             &copy; {new Date().getFullYear()} Skylight Window Cleaning. All rights reserved.
           </p>
+          <a
+            href="https://trypeek.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block mt-2 text-gray-600 text-sm hover:text-gray-400 transition-colors"
+          >
+            Analytics by Peek
+          </a>
         </div>
       </div>
     </footer>
